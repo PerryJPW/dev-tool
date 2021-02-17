@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="../layui/css/layui.css">
+  <link rel="stylesheet" href="../css/index.css">
+
+  <script src="../js/app.js" charset="utf-8"></script>
+  <script src="../js/request.js" charset="utf-8"></script>
+
+</head>
+
+<body class="layui-layout-body overflow-yes">
+  <div class="layui-layout">
+
+    <ul class="layui-nav layui-bg-cyan" lay-filter="">
+      <li class="layui-nav-item layui-this">
+        <a href="">开发工具</a>
+        <dl class="layui-nav-child">
+          <!-- 二级菜单 -->
+          <dd class="layui-this"><a href="">Redis工具</a></dd>
+          <dd><a href="">MySQL工具</a></dd>
+          <dd><a href="">数据库工具</a></dd>
+        </dl>
+      </li>
+      <li class="layui-nav-item"><a href="javascript:;">产品</a></li>
+      <li class="layui-nav-item"><a href="javascript:;">大数据</a></li>
+      <li class="layui-nav-item"><a href="javascript:;">解决方案</a></li>
+      <li class="layui-nav-item"><a href="javascript:;">社区</a></li>
+    </ul>
+
+  </div>
+
+  <div class="layui-tab" lay-filter="tab-bar">
+    <ul class="layui-tab-title">
+      <li class="layui-this">连接设置</li>
+      <li>数据管理 </li>
+      <li>数据添加</li>
+    </ul>
+    <div class="layui-tab-content ">
+      <div class="layui-tab-item layui-show ">
+        <form class="layui-form layui-form-pane" action="" lay-filter="settings-form">
+          <div class="layui-form-item">
+            <label class="layui-form-label">名称</label>
+            <div class="layui-input-block">
+              <input type="text" name="connectionName" required lay-verify="required" placeholder="请输入连接名称"
+                autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">IP</label>
+            <div class="layui-input-block">
+              <input type="text" name="connectionIP" required lay-verify="required" placeholder="请输入IP端口"
+                autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">端口</label>
+            <div class="layui-input-block">
+              <input type="text" name="connectionPort" required lay-verify="required" placeholder="请输入IP端口"
+                autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-inline">
+              <input type="password" name="connectionPassword" placeholder="请输入密码" autocomplete="off"
+                class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">选填</div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">连接</label>
+            <div class="layui-input-block">
+              <input type="checkbox" name="connectionCheckbox" lay-skin="switch" lay-text="成功|失败" disabled>
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <div class="layui-input-block">
+              <button class="layui-btn" lay-submit lay-filter="connectionRedis">连接Redis</button>
+              <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="layui-tab-item">
+        <div class="layui-fluid ">
+          <div class="layui-row ">
+            <div class="layui-col-md1">
+              <div id="database-tree" class="demo-tree-more"></div>
+            </div>
+            <div class="layui-col-md2">
+              <div id="keys-tree" class="demo-tree-more"></div>
+            </div>
+            <div class="layui-col-md9">
+              <form class="layui-form layui-form-pane" action="">
+                <div class="layui-form-item">
+                  <label class="layui-form-label">key</label>
+                  <div class="layui-input-inline">
+                    <input id="input-key" type="text" name="key" lay-verify="required" autocomplete="off"
+                      class="layui-input">
+                  </div>
+                  <div class="layui-input-inline">
+                    <div class="layui-btn-container">
+                      <button class="layui-btn" id="renameKey">重命名</button>
+                    </div>
+                  </div>
+                  <div class="layui-input-inline">
+                    <div class="layui-btn-container">
+                      <button class="layui-btn layui-btn-normal" id="refreshKey">刷新</button>
+                      <button class="layui-btn layui-btn-danger" id="deleteKey">删除</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="layui-form-item">
+                  <label class="layui-form-label">TTL</label>
+                  <div class="layui-input-inline">
+                    <input id="input-ttl" type="text" name="ttl" lay-verify="required" autocomplete="off"
+                      class="layui-input">
+                  </div>
+                  <div class="layui-input-inline">
+                    <div class="layui-btn-container">
+                      <button class="layui-btn" id="setTTL">设置</button>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="layui-form-item layui-form-text" id="view-no-data">
+                  <label class="layui-form-label">no data</label>
+                </div>
+                <div class="layui-form-item layui-form-text" id="view-0" hidden>
+                  <label class="layui-form-label">value(string)</label>
+                  <div class="layui-input-block">
+                    <textarea id="string-value-id" name="value" placeholder="请输入内容" class="layui-textarea"
+                      style="height:300px"></textarea>
+                  </div>
+                  <div class="layui-input-block">
+                    <button class="layui-btn" id="save-string">保存</button>
+                  </div>
+
+                </div>
+
+                <div class="layui-form-item layui-form-text" id="view-1" hidden>
+
+                  <table class="layui-hide" lay-filter="hash-data-table" id="hash-data-table">
+
+                  </table>
+                  <script type="text/html" id="hash-table-bar">
+                    <a class="layui-btn layui-btn-xs" lay-event="edit">保存编辑</a>
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                  </script>
+                </div>
+                <div class="layui-form-item layui-form-text" id="view-2" hidden>
+                  <table class="layui-hide" lay-filter="list-data-table" id="list-data-table">
+
+                  </table>
+                  <script type="text/html" id="list-table-bar">
+                    <a class="layui-btn layui-btn-xs" lay-event="edit">保存编辑</a>
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                  </script>
+                  <div class="layui-form-item">
+                    <form class="layui-form layui-form-pane" action="">
+                      <div class="layui-form-item">
+                        <label class="layui-form-label">value</label>
+                        <div class="layui-input-block">
+                          <input type="text" name="list-push-data" required lay-verify="required" placeholder="value"
+                            autocomplete="off" class="layui-input">
+                        </div>
+                      </div>
+
+                      <div class="layui-form-item">
+                        <div class="layui-input-block">
+                          <button class="layui-btn" id="list-rpush">rpush</button>
+                          <button class="layui-btn" id="list-lpush">lpush</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                <div class="layui-form-item" id="view-3" hidden>
+
+                  <table class="layui-hide" lay-filter="set-data-table" id="set-data-table">
+
+                  </table>
+                  <script type="text/html" id="set-table-bar">
+                    <a class="layui-btn layui-btn-xs" lay-event="edit">保存编辑</a>
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                  </script>
+                </div>
+                <div class="layui-form-item layui-form-text" id="view-4" hidden>
+                  <table class="layui-hide" lay-filter="zset-data-table" id="zset-data-table">
+
+                  </table>
+                  <script type="text/html" id="zset-table-bar">
+                    <a class="layui-btn layui-btn-xs" lay-event="edit">保存编辑</a>
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                  </script>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="layui-tab-item ">
+        <form class="layui-form layui-form-pane" action="" id="addForm">
+          <div class="layui-form-item">
+            <label class="layui-form-label">类型</label>
+            <div class="layui-input-block">
+              <select name="dataType" lay-verify="required" lay-filter="selectType">
+                <option value="0" selected>string</option>
+                <option value="1">hash</option>
+                <option value="2">list</option>
+                <option value="3">set</option>
+                <option value="4">zset</option>
+              </select>
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">key</label>
+            <div class="layui-input-block">
+              <input type="text" name="dataKey" required lay-verify="required" placeholder="请输入key" autocomplete="off"
+                class="layui-input">
+            </div>
+          </div>
+          <div class="layui-form-item layui-form-text" id="input-0">
+            <label class="layui-form-label">string-value</label>
+            <div class="layui-input-block">
+              <textarea name="stringValue" placeholder="请输入value" class="layui-textarea"></textarea>
+            </div>
+          </div>
+          <div class="layui-form-item layui-form-text" id="input-1" hidden>
+            <label class="layui-form-label">hash-value</label>
+            <div class="layui-input-block">
+              <textarea name="hashValue" placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+          </div>
+          <div class="layui-form-item layui-form-text" id="input-2" hidden>
+            <label class="layui-form-label">list-value</label>
+            <div class="layui-input-block">
+              <textarea name="stringValue" placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+          </div>
+          <div class="layui-form-item layui-form-text" id="input-3" hidden>
+            <label class="layui-form-label">set-value</label>
+            <div class="layui-input-block">
+              <textarea name="stringValue" placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+          </div>
+          <div class="layui-form-item layui-form-text" id="input-4" hidden>
+            <label class="layui-form-label">zset-value</label>
+            <div class="layui-input-block">
+              <textarea name="stringValue" placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <div class="layui-input-block">
+              <button class="layui-btn" lay-submit lay-filter="dataSubmit">提交</button>
+              <button type="reset" class="layui-btn layui-btn-primary" id="data-reset">重置</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+
+  <script src="../layui/layui.js" charset="utf-8"></script>
+  <script src="../js/index.js" charset="utf-8"></script>
+</body>
+
+</html>
