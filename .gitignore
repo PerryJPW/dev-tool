@@ -1,6 +1,7 @@
 HELP.md
 target/
 src/test/
+src/main/resources/templates/layui/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
